@@ -3,172 +3,229 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>圖書教師逛展賓果</title>
+<title>AI 賦能連線任務</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
-/* Layout: one phone-width column. A library checkout card: nine slots, each gets a date stamp when done. */
+/* Layout: phone column. A deep-teal signal band on top, then a 3x3 board of nodes; finished nodes light up and a completed row gets a signal line drawn through it. */
 :root{
-  --paper:#f3f6f4; --card:#ffffff; --ink:#16302b; --muted:#5b6f6a; --line:#cfdad6;
-  --green:#0f6b5c; --green-soft:#e0efeb; --stamp:#c8372d; --stamp-soft:#fbe9e6; --gold:#b7791f; --gold-soft:#fdf3dc;
-  --shadow:0 1px 2px rgba(22,48,43,.08),0 6px 18px rgba(22,48,43,.06);
+  --bg:#eef4f6; --card:#ffffff; --ink:#0d2b36; --muted:#56707a; --line:#cddbe0;
+  --band:#0b3d4c; --band-ink:#eaf6f8; --band-dim:#9fc6cf; --grid-dot:rgba(255,255,255,.13);
+  --teal:#0a8f8a; --teal-soft:#dff3f1; --blue:#2f6fd0; --blue-soft:#e3edfb;
+  --amber:#b96f00; --amber-soft:#fdf0d3; --coral:#d1493b; --coral-soft:#fde6e2;
+  --on:#0a8f8a; --on-ink:#ffffff; --win:#f2a900;
+  --shadow:0 1px 2px rgba(13,43,54,.08),0 8px 20px rgba(13,43,54,.07);
   --body:'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif;
   --num:'Space Grotesk','Noto Sans TC',system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --paper:#0f1a18; --card:#182825; --ink:#e6f0ed; --muted:#9db3ad; --line:#2f4541;
-  --green:#58c4b0; --green-soft:#1d3a35; --stamp:#ff8478; --stamp-soft:#3a201d; --gold:#f0c060; --gold-soft:#3a2f17;
-  --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark } }
+  --bg:#0a1a20; --card:#12272f; --ink:#e4f1f4; --muted:#96b3bc; --line:#284550;
+  --band:#06262f; --band-ink:#eaf6f8; --band-dim:#8bb6c0; --grid-dot:rgba(255,255,255,.1);
+  --teal:#4fd1c5; --teal-soft:#123a3a; --blue:#8ab4f8; --blue-soft:#172f52;
+  --amber:#f5c053; --amber-soft:#3b2e10; --coral:#ff8f82; --coral-soft:#42201c;
+  --on:#1aa59d; --on-ink:#ffffff; --win:#f5c053;
+  --shadow:0 1px 2px rgba(0,0,0,.45); color-scheme:dark } }
 :root[data-theme="dark"]{
-  --paper:#0f1a18; --card:#182825; --ink:#e6f0ed; --muted:#9db3ad; --line:#2f4541;
-  --green:#58c4b0; --green-soft:#1d3a35; --stamp:#ff8478; --stamp-soft:#3a201d; --gold:#f0c060; --gold-soft:#3a2f17;
-  --shadow:0 1px 2px rgba(0,0,0,.4); color-scheme:dark }
+  --bg:#0a1a20; --card:#12272f; --ink:#e4f1f4; --muted:#96b3bc; --line:#284550;
+  --band:#06262f; --band-ink:#eaf6f8; --band-dim:#8bb6c0; --grid-dot:rgba(255,255,255,.1);
+  --teal:#4fd1c5; --teal-soft:#123a3a; --blue:#8ab4f8; --blue-soft:#172f52;
+  --amber:#f5c053; --amber-soft:#3b2e10; --coral:#ff8f82; --coral-soft:#42201c;
+  --on:#1aa59d; --on-ink:#ffffff; --win:#f5c053;
+  --shadow:0 1px 2px rgba(0,0,0,.45); color-scheme:dark }
 
 *{box-sizing:border-box}
-body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
-.wrap{max-width:520px;margin:0 auto;padding-block:18px 28px;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:14px}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
 button,input,textarea{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+:focus-visible{outline:3px solid var(--win);outline-offset:2px}
+.gutter{max-width:520px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
-.eyebrow{font-family:var(--num);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:700}
-h1{margin:2px 0 4px;font-size:26px;line-height:1.25;font-weight:900;text-wrap:balance}
-.lede{margin:0;color:var(--muted);font-size:14px}
+.band{background:var(--band);color:var(--band-ink);
+  background-image:radial-gradient(var(--grid-dot) 1.2px,transparent 1.3px);background-size:18px 18px}
+.band .gutter{padding-block:22px 26px;display:flex;align-items:center;gap:14px}
+.band .txt{flex:1;min-width:0}
+.eyebrow{font-family:var(--num);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--band-dim);font-weight:700}
+h1{margin:4px 0 6px;font-size:29px;line-height:1.2;font-weight:900;text-wrap:balance}
+h1 em{font-style:normal;color:var(--win)}
+.lede{margin:0;color:var(--band-dim);font-size:14px}
+.mark{flex:none;width:84px;height:84px}
+
+main.gutter{padding-block:16px 28px;display:flex;flex-direction:column;gap:14px}
+
+.how{border-radius:14px;background:var(--card);box-shadow:var(--shadow);padding:14px 16px}
+.how h2{margin:0 0 8px;font-size:15px}
+.how ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.how li{display:flex;gap:10px;align-items:flex-start}
+.how li b{flex:none;width:22px;height:22px;border-radius:50%;background:var(--teal-soft);color:var(--teal);font-family:var(--num);font-size:12px;display:grid;place-items:center;margin-top:1px}
+.how li span{min-width:0}
+.how mark{background:var(--amber-soft);color:var(--amber);font-weight:700;padding:0 3px;border-radius:3px}
 
 .name{display:flex;flex-direction:column;gap:4px}
 .name label{font-size:12px;font-weight:700;color:var(--muted)}
-.name input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:16px}
+.name input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:16px}
 
-.status{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-radius:12px;background:var(--green-soft);font-weight:700}
-.status .count{font-family:var(--num);font-variant-numeric:tabular-nums}
-.status.win{background:var(--gold-soft);color:var(--gold)}
-.status span:first-child{min-width:0}
+.status{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;background:var(--card);box-shadow:var(--shadow);font-weight:700}
+.status .msg{flex:1;min-width:0}
+.dots{display:flex;gap:4px;flex:none}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--on)}
+.status.win .msg{color:var(--amber)}
 
+.board{position:relative}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.cell{position:relative;aspect-ratio:1/1.08;display:flex;flex-direction:column;align-items:flex-start;gap:4px;
-  padding:9px 8px;border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:var(--shadow);
+.cell{position:relative;aspect-ratio:1/1.12;display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+  padding:9px 8px 8px;border:1.5px solid transparent;border-radius:14px;background:var(--card);box-shadow:var(--shadow);
   text-align:left;cursor:pointer;overflow:hidden;min-width:0}
-.cell .no{font-family:var(--num);font-size:12px;font-weight:700;color:var(--green)}
-.cell .t{font-size:14px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
-.cell .where{margin-top:auto;font-size:11px;color:var(--muted);line-height:1.3;overflow-wrap:anywhere}
-.cell.done{background:var(--stamp-soft);border-color:var(--stamp)}
-.cell.done .no{color:var(--stamp)}
-.cell.line{border-width:2px}
-.stamp{position:absolute;right:5px;bottom:5px;transform:rotate(-12deg);border:2px solid var(--stamp);color:var(--stamp);
-  border-radius:6px;padding:1px 5px;font-family:var(--num);font-size:10px;font-weight:700;line-height:1.25;text-align:center;
-  background:var(--stamp-soft);letter-spacing:.04em}
-.cell.done .where{visibility:hidden}
+.cell .top{display:flex;align-items:center;justify-content:space-between;width:100%}
+.ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--c-soft);color:var(--c)}
+.ico svg,.big svg{width:62%;height:62%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cell .no{font-family:var(--num);font-size:13px;font-weight:700;color:var(--muted)}
+.cell .t{font-size:13.5px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.cell .where{margin-top:auto;font-size:10.5px;color:var(--muted);line-height:1.3;overflow-wrap:anywhere}
+.cell.done{background:var(--on);color:var(--on-ink)}
+.cell.done .ico{background:rgba(255,255,255,.2);color:var(--on-ink)}
+.cell.done .no,.cell.done .where{color:var(--on-ink);opacity:.85}
+.cell.win{border-color:var(--win)}
+.wire{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.wire line{stroke:var(--win);stroke-width:.07;stroke-linecap:round;opacity:.9}
+.wire circle{fill:var(--win)}
+.c0{--c:var(--teal);--c-soft:var(--teal-soft)} .c1{--c:var(--blue);--c-soft:var(--blue-soft)}
+.c2{--c:var(--amber);--c-soft:var(--amber-soft)} .c3{--c:var(--coral);--c-soft:var(--coral-soft)}
 
-.how{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:12px 14px}
-.how h2{margin:0 0 6px;font-size:14px}
-.how ol{margin:0;padding-left:20px;color:var(--muted);font-size:14px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:10px 16px;border-radius:12px;
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:48px;padding:10px 16px;border-radius:14px;
   border:1px solid var(--line);background:var(--card);font-weight:700;cursor:pointer;text-decoration:none;color:var(--ink);text-align:center}
-.btn.primary{background:var(--green);border-color:var(--green);color:var(--card)}
-.btn.stampbtn{background:var(--stamp);border-color:var(--stamp);color:var(--card)}
+.btn.primary{background:var(--band);border-color:var(--band);color:var(--band-ink)}
+.btn.go{background:var(--on);border-color:var(--on);color:var(--on-ink)}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .row .btn{flex:1 1 140px}
-.small{font-size:12px;color:var(--muted)}
+.small{font-size:12px;color:var(--muted);margin:0}
 .linkbtn{background:none;border:0;padding:6px 0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:12px}
 
-.scrim{position:fixed;inset:0;background:rgba(10,20,18,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center}
-.sheet{width:100%;max-width:520px;max-height:92%;overflow-y:auto;background:var(--card);border-radius:18px 18px 0 0;
+.scrim{position:fixed;inset:0;background:rgba(5,20,26,.6);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:520px;max-height:92%;overflow-y:auto;background:var(--card);border-radius:20px 20px 0 0;
   padding:16px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
   padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
-.sheet header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.sheet h2{margin:0;font-size:19px;line-height:1.35;text-wrap:balance}
-.close{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:18px}
-.place{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:12px;font-weight:700}
+.sheet header{display:flex;align-items:flex-start;gap:12px}
+.big{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--c-soft);color:var(--c)}
+.sheet .hd{flex:1;min-width:0}
+.place{font-size:12px;font-weight:700;color:var(--muted)}
+.sheet h2{margin:0;font-size:18px;line-height:1.35;text-wrap:balance}
+.close{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-size:18px}
 .sheet p{margin:0}
-.sessions{margin:0;padding:10px 12px;border-radius:10px;background:var(--paper);font-size:13px;list-style:none;display:flex;flex-direction:column;gap:4px}
-.sessions b{font-family:var(--num);font-variant-numeric:tabular-nums;margin-right:6px}
-.sheet label{font-size:13px;font-weight:700}
-.sheet textarea{width:100%;min-height:84px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font-size:16px;resize:vertical}
+.ask{padding:10px 12px;border-radius:12px;background:var(--amber-soft);color:var(--ink);font-weight:700;font-size:14px}
+.ask small{display:block;font-family:var(--num);font-size:11px;letter-spacing:.1em;color:var(--amber)}
+.sheet textarea{width:100%;min-height:88px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);font-size:16px;resize:vertical}
+.hint{padding:10px 12px;border-radius:12px;background:var(--bg);font-size:13px;color:var(--muted)}
+.hint b{color:var(--ink)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;
-  background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font-size:13px;font-weight:700;max-width:90%;text-align:center}
-@media (prefers-reduced-motion: no-preference){ .stamp{animation:thud .25s ease-out} @keyframes thud{from{transform:rotate(-12deg) scale(1.6);opacity:0}to{transform:rotate(-12deg) scale(1);opacity:1}} }
+  background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:13px;font-weight:700;max-width:90%;text-align:center}
+@media (prefers-reduced-motion: no-preference){
+  .cell.done .ico{animation:pop .3s ease-out} @keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
+  .wire line{stroke-dasharray:3;animation:draw .6s ease-out} @keyframes draw{from{stroke-dashoffset:3}to{stroke-dashoffset:0}}
+}
 </style>
 
-<div class="wrap">
-  <div>
-    <div class="eyebrow">2026 EdTech Taiwan · 11/12</div>
-    <h1>圖書教師逛展賓果</h1>
-    <p class="lede">輕鬆逛、隨手拍。連成一條線就賓果，沒有標準答案。</p>
+<div class="band">
+  <div class="gutter">
+    <div class="txt">
+      <div class="eyebrow">2026 EdTech Taiwan · 11/12</div>
+      <h1>AI 賦能<em>連線</em>任務</h1>
+      <p class="lede">逛展、拍照、寫一句話。把三個節點連成一線，就完成任務。</p>
+    </div>
+    <svg class="mark" viewBox="0 0 84 84" aria-hidden="true">
+      <g fill="none" stroke="var(--band-dim)" stroke-width="1.5" opacity=".55">
+        <path d="M14 14H70M14 42H70M14 70H70M14 14V70M42 14V70M70 14V70"/>
+      </g>
+      <path d="M14 70L42 42L70 14" fill="none" stroke="var(--win)" stroke-width="4" stroke-linecap="round"/>
+      <g fill="var(--band)" stroke="var(--band-dim)" stroke-width="2">
+        <circle cx="42" cy="14" r="6"/><circle cx="14" cy="14" r="6"/><circle cx="14" cy="42" r="6"/>
+        <circle cx="70" cy="42" r="6"/><circle cx="42" cy="70" r="6"/><circle cx="70" cy="70" r="6"/>
+      </g>
+      <g fill="var(--win)"><circle cx="14" cy="70" r="7"/><circle cx="42" cy="42" r="7"/><circle cx="70" cy="14" r="7"/></g>
+    </svg>
   </div>
+</div>
 
+<main class="gutter">
   <div class="how">
     <h2>怎麼玩</h2>
     <ol>
-      <li>點一格看任務，到攤位逛逛。</li>
-      <li>寫一句話，按「蓋章」。</li>
-      <li>按「貼到 Padlet」，在同編號的那一欄按 ＋，貼上文字再加一張照片。</li>
+      <li><b>1</b><span>點一個節點看任務，到攤位逛逛、拍張照。</span></li>
+      <li><b>2</b><span>寫一句話，按「完成連線」。橫、直、斜連成一線就過關。</span></li>
+      <li><b>3</b><span>到 Padlet 同編號的那一欄按 ＋，<mark>主題填「學校＋姓名」</mark>，貼上一句話，加上照片。</span></li>
     </ol>
   </div>
 
   <div class="name">
-    <label for="teacher">學校／姓名（貼到 Padlet 時會自動帶上）</label>
+    <label for="teacher">學校＋姓名（Padlet 貼文的主題）</label>
     <input id="teacher" type="text" autocomplete="off" placeholder="例：大安國小 林老師">
   </div>
 
-  <div class="status" id="status" role="status"><span id="statusText">點一格開始</span><span class="count" id="statusCount">0 / 9</span></div>
+  <div class="status" id="status" role="status">
+    <span class="msg" id="statusText">點一個節點開始</span>
+    <span class="dots" id="dots" aria-hidden="true"></span>
+  </div>
 
-  <div class="grid" id="grid"></div>
+  <div class="board">
+    <div class="grid" id="grid"></div>
+    <svg class="wire" id="wire" viewBox="0 0 3 3" preserveAspectRatio="none" aria-hidden="true"></svg>
+  </div>
 
   <a class="btn primary" id="wall" target="_blank" rel="noopener" href="https://padlet.com/kochingzu5/padlet-s025cvk9rdyx11f1rzbc">看大家的成果牆（Padlet）</a>
-  <div class="row">
-    <button class="btn" id="copyAll" type="button">複製我的全部紀錄</button>
-  </div>
+  <button class="btn" id="copyAll" type="button">複製我的全部紀錄</button>
   <div>
     <button class="linkbtn" id="reset" type="button">清除我的紀錄，重新開始</button>
     <span class="small" id="resetConfirm" hidden>確定要清除嗎？ <button class="linkbtn" id="resetYes" type="button">確定清除</button> <button class="linkbtn" id="resetNo" type="button">取消</button></span>
   </div>
   <p class="small">進度只存在這支手機的瀏覽器裡。照片請直接上傳到 Padlet。</p>
-</div>
+</main>
 
 <div class="scrim" id="scrim" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle">
     <header>
-      <div><span class="place" id="sPlace"></span><h2 id="sTitle"></h2></div>
+      <div class="big" id="sIcon"></div>
+      <div class="hd"><div class="place" id="sPlace"></div><h2 id="sTitle"></h2></div>
       <button class="close" id="sClose" type="button" aria-label="關閉">✕</button>
     </header>
     <p id="sTask"></p>
-    <ul class="sessions" id="sSessions" hidden>
-      <li><b>13:00</b>AI × 四學跨域素養課堂實踐</li>
-      <li><b>14:00</b>從零開始的 AI 備課（Gemini）</li>
-      <li><b>15:00</b>AI 時代的資安探索</li>
-      <li><b>16:00</b>AI × AR 情境互動英文口說</li>
-      <li class="small">以上為教案沙龍場次，以現場公告為準。未來教育講堂也可以。</li>
-    </ul>
-    <div>
-      <label for="note" id="sPrompt"></label>
-      <textarea id="note" placeholder="一句話就好"></textarea>
-    </div>
+    <label class="ask" for="note"><small>一句話</small><span id="sPrompt"></span></label>
+    <textarea id="note" placeholder="寫一句話就好"></textarea>
     <div class="row">
-      <button class="btn stampbtn" id="sStamp" type="button">蓋章，完成這一格</button>
-      <a class="btn primary" id="sPadlet" target="_blank" rel="noopener" href="https://padlet.com/kochingzu5/padlet-s025cvk9rdyx11f1rzbc">複製文字並貼到 Padlet</a>
+      <button class="btn go" id="sDone" type="button">完成連線</button>
+      <a class="btn primary" id="sPadlet" target="_blank" rel="noopener" href="https://padlet.com/kochingzu5/padlet-s025cvk9rdyx11f1rzbc">複製並前往 Padlet</a>
     </div>
-    <p class="small" id="sHint"></p>
+    <div class="hint" id="sHint"></div>
   </div>
 </div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
 const NUM = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨'];
+const ICON = [
+  '<path d="M4 8h3l2-2h6l2 2h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/>',
+  '<path d="M12 6C10 4.500 7 4 4 4.500v13C7 17 10 17.500 12 19c2-1.500 5-2 8-1.500v-13C17 4 14 4.500 12 6zM12 6v13"/>',
+  '<rect x="3" y="4" width="18" height="12" rx="1.500"/><path d="M8 20h8M12 16v4M8 12l2.500-3 2.500 2 3-4"/>',
+  '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 12h7M7 15h4"/>',
+  '<path d="M12 3l8 3v6c0 4.500-3.200 8-8 9-4.800-1-8-4.500-8-9V6z"/><path d="M8.500 12l2.500 2.500 4.500-5"/>',
+  '<path d="M3 9l9-5 9 5zM5 9v9M9.500 9v9M14.500 9v9M19 9v9M3 20h18"/>',
+  '<rect x="4" y="10" width="16" height="10" rx="1"/><path d="M3 7h18v3H3zM12 7v13M12 7C10.500 4 7 4 7 6s3 1 5 1zM12 7c1.500-3 5-3 5-1s-3 1-5 1z"/>',
+  '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.500 10.900c.6.500 1 1.300 1 2.100h5c0-.8.4-1.600 1-2.100A6 6 0 0 0 12 3z"/>'
+];
 const TASKS = [
   {t:'我到了！展場合照', where:'展場任何角落', task:'和夥伴在展場任何一個角落合照，自拍也可以。', prompt:'今天最期待看到什麼？'},
-  {t:'坐下來聽一場分享', where:'教案沙龍／未來教育講堂', task:'找一場坐下來聽，聽 10 分鐘也算。', prompt:'我聽到一個可以試試看的做法是……', sessions:true},
-  {t:'閱讀資源尋寶', where:'雲書苑、大英百科等', task:'找一個和閱讀有關的資源：電子書、資料庫、英文閱讀、族語都算。例如雲書苑、大英百科、英閱、Funday、族語E樂園。', prompt:'它可以用在圖書館的哪個時候？'},
-  {t:'HiTeach 展區體驗', where:'校園雲平台區 B1027 附近', task:'HiTeach 在校園雲平台區（B1027 附近，建達的上方、SOLLY 旁邊）。看一段示範或親手操作看看。', prompt:'哪一個功能可以用在閱讀課或圖書館利用教育？'},
-  {t:'得報／謙懿科技', where:'B530 品牌旗艦館', task:'得報與謙懿科技共用攤位 B530，靠近 3、4 號入口。現場挑一篇新聞讀讀看，拍下你選的那一篇。', prompt:'這篇我會給幾年級讀？可以搭配什麼活動？'},
-  {t:'查證・防詐・網安', where:'查證站、iWIN、斥詐人生', task:'到查證站、iWIN 或斥詐人生逛逛，找一個可以放進課堂的文宣、遊戲或活動。', prompt:'我想用它跟學生聊什麼？'},
-  {t:'臺北市教育局打卡', where:'B622 教育聯合展區', task:'看看自己人今年展出什麼，拍一張照片。', prompt:'有沒有哪一項是我原本不知道的？'},
-  {t:'戰利品開箱', where:'整個展場', task:'拍下今天拿到的贈品、文宣或闖關獎品。', prompt:'哪一樣可以放在圖書館？'},
-  {t:'最想帶回學校的一件事', where:'逛完再寫', task:'逛完之後，選一個最想帶回去的工具、點子或一句話。', prompt:'我想在閱讀推廣或課堂上試試……'}
+  {t:'聽一場分享', where:'任何一場分享、講座', task:'找一場分享、講座。坐下來聽，聽 10 分鐘也算。', prompt:'我聽到一個可以試試看的做法是……'},
+  {t:'閱讀資源尋寶', where:'雲書苑、大英百科等', task:'找一個閱讀相關的資源：電子書、資料庫、英文閱讀、族語……都算。例如雲書苑、大英百科、英閱、Funday、族語E樂園。', prompt:'它可以用在圖書館的哪個時候？'},
+  {t:'HiTeach 展區體驗', where:'校園雲平台區 B1027 附近', task:'HiTeach 在校園雲平台區（B1027 附近，建達的上方、SOLLY 旁邊）。看一段示範或親手操作看看，拍下畫面。', prompt:'哪一個功能可以用在閱讀課或圖書館利用教育？'},
+  {t:'得報互動體驗', where:'B530 與謙懿科技共用', task:'得報與謙懿科技共用攤位 B530（品牌旗艦館，靠近 3、4 號入口）。從「五島、軟語貓、閱讀日曆」區挑選一種進行體驗互動，並拍下互動成果。', prompt:'體驗的互動可以融入哪些課程或活動？希望達到什麼成效？'},
+  {t:'資訊素養素材', where:'查證站、iWIN、斥詐人生', task:'到查證站、iWIN 或斥詐人生逛逛，拍一個你覺得可以放進課堂的文宣、遊戲或活動。', prompt:'我想用它跟學生聊什麼？如果融入課程活動中，你會有哪些疑惑、需求？'},
+  {t:'臺北市教育局打卡', where:'B622 教育聯合展區', task:'看看自己人今年展出什麼，拍一張照片。', prompt:'有沒有哪一項是你原本不知道的？'},
+  {t:'戰利品開箱', where:'整個展場', task:'拍下你今天拿到的贈品、文宣或闖關獎品。', prompt:'哪一樣可以放在圖書館？'},
+  {t:'最想帶回學校的一件事', where:'逛完再寫', task:'逛完之後，選一個最想帶回去的工具、點子或一句話，配一張照片。', prompt:'我想在閱讀推廣或課堂上試試……'}
 ];
 const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 const KEY = 'tplib_bingo_2026';
 const $ = id => document.getElementById(id);
+const svg = i => '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICON[i] + '</svg>';
 
 let state = {name:'', cells: TASKS.map(() => ({done:false, note:''}))};
 try {
@@ -178,74 +235,71 @@ try {
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
 let active = null, toastTimer = null;
-function toast(msg){ const el = $('toast'); el.textContent = msg; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.hidden = true, 2600); }
+function toast(msg){ const el = $('toast'); el.textContent = msg; el.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.hidden = true, 2800); }
 
 function evaluate(){
   const done = state.cells.map(c => c.done);
   const won = LINES.filter(l => l.every(i => done[i]));
-  const inLine = new Set(won.flat());
-  return {count: done.filter(Boolean).length, lines: won.length, inLine};
+  return {done, count: done.filter(Boolean).length, won, inLine: new Set(won.flat())};
 }
 
 function render(){
   const r = evaluate();
   const grid = $('grid'); grid.textContent = '';
   TASKS.forEach((task, i) => {
-    const c = state.cells[i];
     const b = document.createElement('button');
     b.type = 'button';
-    b.className = 'cell' + (c.done ? ' done' : '') + (r.inLine.has(i) ? ' line' : '');
-    b.setAttribute('aria-label', NUM[i] + ' ' + task.t + (c.done ? '，已完成' : ''));
-    const no = document.createElement('span'); no.className = 'no'; no.textContent = NUM[i];
-    const t = document.createElement('span'); t.className = 't'; t.textContent = task.t;
-    const w = document.createElement('span'); w.className = 'where'; w.textContent = task.where;
-    b.append(no, t, w);
-    if (c.done) { const s = document.createElement('span'); s.className = 'stamp'; s.innerHTML = '115.11.12<br>已完成'; b.append(s); }
+    b.className = 'cell c' + (i % 4) + (r.done[i] ? ' done' : '') + (r.inLine.has(i) ? ' win' : '');
+    b.setAttribute('aria-label', NUM[i] + ' ' + task.t + (r.done[i] ? '，已完成' : ''));
+    b.innerHTML = '<span class="top"><span class="ico">' + svg(i) + '</span><span class="no"></span></span><span class="t"></span><span class="where"></span>';
+    b.querySelector('.no').textContent = r.done[i] ? '✓ ' + NUM[i] : NUM[i];
+    b.querySelector('.t').textContent = task.t;
+    b.querySelector('.where').textContent = r.done[i] ? '已連線' : task.where;
     b.addEventListener('click', () => openSheet(i));
     grid.append(b);
   });
-  $('statusCount').textContent = r.count + ' / 9';
-  const st = $('status');
-  st.classList.toggle('win', r.lines > 0);
-  $('statusText').textContent = r.count === 9 ? '全部蓋滿，太厲害了！'
-    : r.lines > 0 ? '賓果！連成 ' + r.lines + ' 條線 🎉'
-    : r.count === 0 ? '點一格開始' : '已蓋 ' + r.count + ' 格，再連一條線就賓果';
+  const p = i => [(i % 3) + .5, Math.floor(i / 3) + .5];
+  $('wire').innerHTML = r.won.map(l => { const [a, b] = [p(l[0]), p(l[2])];
+    return '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '"/>'; }).join('');
+  $('dots').innerHTML = r.done.map(d => '<i' + (d ? ' class="on"' : '') + '></i>').join('');
+  $('status').classList.toggle('win', r.won.length > 0);
+  $('statusText').textContent = r.count === 9 ? '九個節點全部連線，太厲害了！'
+    : r.won.length > 0 ? '連線成功！已連成 ' + r.won.length + ' 條線 🎉'
+    : r.count === 0 ? '點一個節點開始' : '已點亮 ' + r.count + ' 個節點，連成一線就過關';
 }
 
 function openSheet(i){
   active = i; const task = TASKS[i], c = state.cells[i];
-  $('sPlace').textContent = NUM[i] + ' ' + task.where;
+  $('sIcon').className = 'big c' + (i % 4); $('sIcon').innerHTML = svg(i);
+  $('sPlace').textContent = NUM[i] + '　' + task.where;
   $('sTitle').textContent = task.t;
   $('sTask').textContent = task.task;
-  $('sSessions').hidden = !task.sessions;
   $('sPrompt').textContent = task.prompt;
   $('note').value = c.note;
-  $('sStamp').textContent = c.done ? '取消這一格的章' : '蓋章，完成這一格';
-  $('sHint').textContent = '到 Padlet 後，在「' + NUM[i] + '」那一欄按 ＋，貼上文字，再加一張照片。';
+  $('sDone').textContent = c.done ? '取消這個節點' : '完成連線';
+  const who = state.name ? '「' + state.name + '」' : '「學校＋姓名」';
+  $('sHint').innerHTML = '到 Padlet 後：在 <b>' + NUM[i] + '</b> 那一欄按 ＋，主題填 <b></b>，內容貼上這句話，再加一張照片。';
+  $('sHint').querySelectorAll('b')[1].textContent = who;
   $('scrim').hidden = false;
 }
 function closeSheet(){ if (active !== null) { state.cells[active].note = $('note').value.trim(); save(); } $('scrim').hidden = true; active = null; render(); }
 
-function cellText(i){
-  const c = state.cells[i], who = state.name ? '（' + state.name + '）' : '';
-  return NUM[i] + ' ' + TASKS[i].t + who + '\n' + (c.note || '已完成！');
-}
 function copy(text, okMsg){
   const fail = () => toast('這個瀏覽器不能自動複製，請長按文字手動複製');
   try { navigator.clipboard.writeText(text).then(() => toast(okMsg), fail); } catch (e) { fail(); }
 }
 
 $('note').addEventListener('input', () => { if (active !== null) { state.cells[active].note = $('note').value; save(); } });
-$('sStamp').addEventListener('click', () => {
-  const before = evaluate().lines;
-  const c = state.cells[active]; c.done = !c.done; c.note = $('note').value.trim(); save();
-  const after = evaluate().lines, wasDone = c.done;
+$('sDone').addEventListener('click', () => {
+  const before = evaluate().won.length;
+  const c = state.cells[active]; c.done = !c.done; const now = c.done;
   closeSheet();
-  toast(!wasDone ? '已取消這一格' : after > before ? '賓果！連成一條線了 🎉' : '蓋章完成');
+  const after = evaluate().won.length;
+  toast(!now ? '已取消這個節點' : after > before ? '連線成功！連成一條線了 🎉' : '節點已點亮');
 });
 $('sPadlet').addEventListener('click', () => {
   const i = active; state.cells[i].note = $('note').value.trim(); save();
-  copy(cellText(i), '文字已複製，到 Padlet 的 ' + NUM[i] + ' 欄貼上');
+  copy(state.cells[i].note || '已完成！', '已複製這句話，到 Padlet 的 ' + NUM[i] + ' 欄貼上');
 });
 $('sClose').addEventListener('click', closeSheet);
 $('scrim').addEventListener('click', e => { if (e.target === $('scrim')) closeSheet(); });
@@ -254,10 +308,10 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('scrim'
 $('teacher').value = state.name || '';
 $('teacher').addEventListener('input', e => { state.name = e.target.value.trim(); save(); });
 $('copyAll').addEventListener('click', () => {
-  const done = state.cells.map((c, i) => c.done ? cellText(i) : null).filter(Boolean);
-  if (!done.length) { toast('還沒有蓋章的格子'); return; }
   const r = evaluate();
-  copy('【教育科技展逛展賓果】' + r.count + ' 格、' + r.lines + ' 條線\n\n' + done.join('\n\n'), '已複製全部紀錄');
+  const done = state.cells.map((c, i) => c.done ? NUM[i] + ' ' + TASKS[i].t + '\n' + (c.note || '已完成！') : null).filter(Boolean);
+  if (!done.length) { toast('還沒有點亮的節點'); return; }
+  copy('【AI 賦能連線任務】' + (state.name ? state.name + '｜' : '') + r.count + ' 格、' + r.won.length + ' 條線\n\n' + done.join('\n\n'), '已複製全部紀錄');
 });
 $('reset').addEventListener('click', () => { $('resetConfirm').hidden = false; });
 $('resetNo').addEventListener('click', () => { $('resetConfirm').hidden = true; });
