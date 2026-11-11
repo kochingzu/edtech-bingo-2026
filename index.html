@@ -85,8 +85,9 @@ main.gutter{padding-block:16px 28px;display:flex;flex-direction:column;gap:14px}
 .cell.done .ico{background:rgba(255,255,255,.2);color:var(--on-ink)}
 .cell.done .no,.cell.done .where{color:var(--on-ink);opacity:.85}
 .cell.win{border-color:var(--win)}
-.wire{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.wire line{stroke:var(--win);stroke-width:.07;stroke-linecap:round;opacity:.9}
+.wire{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.cell > *{position:relative;z-index:2}
+.wire line{stroke:var(--win);stroke-width:.06;stroke-linecap:round;opacity:.75}
 .wire circle{fill:var(--win)}
 .c0{--c:var(--teal);--c-soft:var(--teal-soft)} .c1{--c:var(--blue);--c-soft:var(--blue-soft)}
 .c2{--c:var(--amber);--c-soft:var(--amber-soft)} .c3{--c:var(--coral);--c-soft:var(--coral-soft)}
